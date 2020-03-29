@@ -1,0 +1,12 @@
+package(default_visibility = ["PUBLIC"])
+
+go_library(
+    name = "debug",
+    srcs = [
+        "debug.go",
+    ],
+    deps = [
+        "//vfs",
+        "//third_party/go:cli",
+    ],
+)

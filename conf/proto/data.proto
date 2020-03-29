@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+option go_package = "github.com.com/linuxerwang/goplz/conf/proto";
+
+message SourceFilter {
+    string match = 1;
+    string to_virtual_dir = 2;
+    string strip = 3;
+    string prepend = 4;
+    bool readonly = 5;
+
+    repeated string exclude_regexp = 11;
+}
+
+message SourceMapping {
+    string from_actual_dir = 1;
+
+    repeated SourceFilter filter = 11;
+    repeated string exclude = 12;
+}
+
+message Settings {
+    string ide_cmd = 1;
+
+    string virtual_go_path = 2;
+
+    repeated SourceMapping source_mapping = 11;
+    repeated string exclude = 12;
+}

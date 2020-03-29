@@ -1,0 +1,91 @@
+package(default_visibility = ["PUBLIC"])
+
+go_get(
+    name = "x_sys_unix",
+    get = "golang.org/x/sys/unix/...",
+    revision = "18eb32c0e2f0c2bc8d17842ed4ad41486f349ad4",
+)
+
+go_get(
+    name = "go_fuse",
+    get = "github.com/hanwen/go-fuse/...",
+    revision = "0e3c45fc48996fb06eb0b7c417bf324396d783d8",
+    deps = [
+        ":x_sys_unix",
+    ],
+)
+
+go_get(
+    name = "fsnotify",
+    get = "github.com/rjeczalik/notify/...",
+    revision = "629144ba06a1c6af28c1e42c228e3d42594ce081",
+    deps = [
+        ":x_sys_unix",
+    ],
+)
+
+go_get(
+    name = "warnings",
+    get = "gopkg.in/warnings.v0/...",
+    revision = "ec4a0fea49c7b46c2aeb0b51aac55779c607e52b",
+)
+
+go_get(
+    name = "gcfg",
+    get = "gopkg.in/gcfg.v1/...",
+    revision = "61b2c08bc8f6068f7c5ca684372f9a6cb1c45ebe",
+    deps = [
+        ":warnings",
+    ],
+)
+
+go_get(
+    name = "protobuf",
+    get = "github.com/golang/protobuf/...",
+    revision = "v1.3.2",
+    strip = [
+        "proto/proto3_proto",
+        "conformance",
+    ],
+)
+
+go_get(
+    name = 'protoc-gen-go',
+    # This produces an executable tool that we use elsewhere;
+    # marking this makes it easy to use in other rules or through
+    # plz run since it will only produce a single output.
+    # Other rules would invoke it via a command like
+    # $(exe //third_party/go:protoc-gen-go) which Please will
+    # expand into the appropriate location.
+    binary = True,
+    get = [],
+    install = ['github.com/golang/protobuf/protoc-gen-go'],
+    deps = [
+        ':protobuf',
+    ],
+)
+
+go_get(
+    name = "toml",
+    get = "github.com/BurntSushi/toml/...",
+    revision = "v0.3.1",
+)
+
+go_get(
+    name = "yaml",
+    get = "gopkg.in/yaml.v2/...",
+    revision = "v2.2.2",
+)
+
+go_get(
+    name = "cli",
+    get = "github.com/urfave/cli/...",
+    revision = "v2.1.1",
+    strip = [
+        "docs.go",
+    ],
+    deps = [
+        ":toml",
+        ":yaml",
+    ],
+)

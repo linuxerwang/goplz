@@ -1,0 +1,16 @@
+package(default_visibility = ["PUBLIC"])
+
+go_library(
+    name = "vfs",
+    srcs = [
+        "entry.go",
+        "vfs_darwin.go",
+        "vfs_linux.go",
+        "vfs.go",
+    ],
+    deps = [
+        "//third_party/go:cli",
+        "//third_party/go:go_fuse",
+        "//third_party/go:x_sys_unix",
+    ],
+)

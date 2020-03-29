@@ -1,0 +1,12 @@
+package(default_visibility = ["PUBLIC"])
+
+go_library(
+    name = "init",
+    srcs = [
+        "init.go",
+    ],
+    deps = [
+        "//conf",
+        "//third_party/go:cli",
+    ],
+)

@@ -1,0 +1,13 @@
+package(default_visibility = ["PUBLIC"])
+
+protoc_binary(
+    name = 'protoc',
+    version = '3.11.2',
+)
+
+github_repo(
+    name = "protobuf",
+    build_file = "protobuf.BUILD",
+    repo = "protocolbuffers/protobuf",
+    revision = "fe1790ca0df67173702f70d5646b82f48f412b99", # v3.11.2
+)

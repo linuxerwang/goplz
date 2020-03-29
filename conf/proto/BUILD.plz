@@ -1,0 +1,11 @@
+package(default_visibility = ['PUBLIC'])
+
+proto_library(
+    name = "proto",
+    srcs = [
+        "data.proto",
+    ],
+    languages = ["go"],
+    deps = [
+    ],
+)

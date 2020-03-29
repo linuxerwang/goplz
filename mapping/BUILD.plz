@@ -1,0 +1,14 @@
+go_library(
+    name = "mapping",
+    srcs = [
+        "filter.go",
+        "mapper.go",
+        "mapping.go",
+        "path.go",
+    ],
+    visibility = ["PUBLIC"],
+    deps = [
+        "//conf",
+        "//conf/proto",
+    ],
+)

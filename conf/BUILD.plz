@@ -1,0 +1,12 @@
+go_library(
+    name = "conf",
+    srcs = [
+        "conf.go",
+    ],
+    visibility = ["PUBLIC"],
+    deps = [
+        "//conf/proto",
+        "//third_party/go:gcfg",
+        "//third_party/go:protobuf",
+    ],
+)

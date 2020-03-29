@@ -1,0 +1,5 @@
+filegroup(
+    name = 'package',
+    srcs = ['deb.build_defs'],
+    visibility = ['PUBLIC'],
+)

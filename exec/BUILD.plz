@@ -1,0 +1,11 @@
+package(default_visibility = ["PUBLIC"])
+
+go_library(
+    name = "exec",
+    srcs = [
+        "cmd.go",
+    ],
+    deps = [
+        "//conf",
+    ],
+)

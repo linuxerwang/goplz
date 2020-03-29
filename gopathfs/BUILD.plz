@@ -1,0 +1,19 @@
+package(default_visibility = ["PUBLIC"])
+
+go_library(
+    name = "gopathfs",
+    srcs = [
+        "dir.go",
+        "file.go",
+        "gopathfs.go",
+    ],
+    deps = [
+        "//conf",
+        "//vfs",
+        "//mapping",
+        "//third_party/go:cli",
+        "//third_party/go:fsnotify",
+        "//third_party/go:go_fuse",
+        "//third_party/go:x_sys_unix",
+    ],
+)

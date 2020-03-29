@@ -1,0 +1,68 @@
+def deb_package(name, version, spec, arch=None, postinst=None, prerm=None,
+    package_name=None, files=None, dirs=None, visibility=None):
+    """Defines a rule to build a debian package using debmaker.
+
+    Args:
+      name (str): Rule name
+      version (str): Version of the package.
+      spec (str): The spec file
+      package_name (str): The deb package name
+      files (dict): Dict of locations -> files to include, for example:
+            {
+                '/usr/bin/plz': '//src:please',
+                '/usr/share/plz/junit_runner': '//src/build/java:junit_runner',
+                '/usr/share/plz/some_file': 'some_file',  # file in this package
+            }
+      dirs (dict): Dict of directories -> rules to move into that directory, for example:
+            {
+                '/usr/bin': ['//src:please'],
+                '/usr/share/plz': ['//src/build/java:junit_runner', 'some_file'],
+            }
+      links (dict): Dict of locations -> file to link to, for example:
+            {
+                '/usr/bin/plz': '/opt/please',
+            }
+      visibility (list): Visibility specification.
+    """
+    srcs = [spec]
+    package_name = package_name or name
+    arch = arch or CONFIG.ARCH
+    cmds = ['debmaker']
+    cmds.extend(['-v'])
+    cmds.extend(['-arch', arch])
+    cmds.extend(['-version', version])
+    cmds.extend(['-pkg-name', package_name])
+    if postinst:
+        cmds.extend(['-postinst', '$(location %s)' % postinst])
+        srcs.extend([postinst])
+    if prerm:
+        cmds.extend(['-prerm', '$(location %s)' % prerm])
+        srcs.extend([prerm])
+    cmds.extend(['-spec-file', '$(location %s)' % spec])
+    cmds.extend(['-output-dir', '$(dirname %s)' % '$OUT'])
+
+    # Files
+    if files:
+        for v in sorted(files.values()):
+            srcs.extend([v])
+        for k, v in files.items():
+            cmds.extend(['-file=%s=%s' % (k, '$(locations %s)' % v)])
+
+    # Dirs
+    if dirs:
+        for v in sorted(dirs.values()):
+            srcs.extend(v)
+        for k, v in dirs.items():
+            for d in v:
+                cmds.extend(['-dir=%s="%s"' % (k, '$(locations %s)' % d)])
+
+    return build_rule(
+        name=name,
+        srcs=srcs,
+        outs=['%s_%s_%s.deb' % (package_name, version, arch)],
+        cmd=' '.join(cmds),
+        visibility=visibility,
+        building_description='Packaging...',
+        requires=['debmaker'],
+        output_is_complete=True,
+    )

@@ -1,0 +1,11 @@
+package(default_visibility = ["PUBLIC"])
+
+go_library(
+    name = "version",
+    srcs = [
+        "version.go",
+    ],
+    deps = [
+        "//third_party/go:cli",
+    ],
+)
