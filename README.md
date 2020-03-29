@@ -76,14 +76,29 @@ for Please and has the same limit that it only works for Linux and MacOS users).
 
 ## Get goplz
 
-Suppose you have a normal Go SDK, run the following command to install goplz:
+### Install prebuilt package
+
+Ubuntu users can also download the deb package in the release tab.
+
+### Build from source code
+
+goplz is built with Please.
+
+Suppose you have a normal Go SDK, run the following command to get goplz source
+code:
 
 ```bash
-$ go get https://github.com/linuxerwang/goplz
+$ go get -d https://github.com/linuxerwang/goplz
 ```
 
-Ubuntu users can also download the deb package. The executable file "goplz"
-must be in your $PATH or anywhere you know how to access.
+In goplz folder, run "plz build":
+
+```bash
+$ plz build :goplz
+```
+
+Put the executable file "goplz" in your $PATH or anywhere you know how to
+access.
 
 ## Using goplz
 
