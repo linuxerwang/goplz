@@ -1,6 +1,11 @@
 package vfs
 
 import (
+	"fmt"
+	"io"
+	"log"
+	"sync"
+
 	"github.com/hanwen/go-fuse/fuse"
 )
 
@@ -16,8 +21,15 @@ type Entry interface {
 	Readonly() bool
 	// Parent returns the parent entry.
 	Parent() Entry
-	// Children returns the child entries.
-	Children() map[string]Entry
+	// GetChild returns the child entry.
+	GetChild(key string) Entry
+	// SetChild sets the child entry with key.
+	SetChild(key string, entry Entry)
+	// DeleteChild deletes child entry by key.
+	DeleteChild(key string)
+	Children() []fuse.DirEntry
+	// Print prints the entry.
+	Print(w io.Writer, prefix string)
 }
 
 type entry struct {
@@ -25,8 +37,9 @@ type entry struct {
 	actual   string
 	readonly bool
 
-	parent   Entry
-	children map[string]Entry
+	parent     Entry
+	children   map[string]Entry
+	childrenMu sync.RWMutex
 }
 
 func (e *entry) Virtual() string {
@@ -39,10 +52,6 @@ func (e *entry) Actual() string {
 
 func (e *entry) Parent() Entry {
 	return e.parent
-}
-
-func (e *entry) Children() map[string]Entry {
-	return e.children
 }
 
 func (e *entry) Attr() (attr *fuse.Attr, err error) {
@@ -62,6 +71,67 @@ func (e *entry) Attr() (attr *fuse.Attr, err error) {
 
 func (e *entry) Readonly() bool {
 	return e.readonly
+}
+
+func (e *entry) GetChild(key string) Entry {
+	e.childrenMu.RLock()
+	defer e.childrenMu.RUnlock()
+
+	return e.children[key]
+}
+
+func (e *entry) SetChild(key string, entry Entry) {
+	e.childrenMu.Lock()
+	defer e.childrenMu.Unlock()
+
+	e.children[key] = entry
+}
+
+func (e *entry) DeleteChild(key string) {
+	e.childrenMu.Lock()
+	defer e.childrenMu.Unlock()
+
+	delete(e.children, key)
+}
+
+func (e *entry) Children() []fuse.DirEntry {
+	e.childrenMu.RLock()
+	defer e.childrenMu.RUnlock()
+
+	entries := make([]fuse.DirEntry, 0, len(e.children))
+	for _, c := range e.children {
+		attr, err := c.Attr()
+		if err != nil {
+			log.Print(err)
+			continue
+		}
+		entries = append(entries, fuse.DirEntry{
+			Name: c.Virtual(),
+			Mode: attr.Mode,
+		})
+	}
+	return entries
+}
+
+func (e *entry) Print(w io.Writer, prefix string) {
+	virtual := e.Virtual()
+	if virtual == "" || virtual == "." {
+		virtual = "TOP"
+	}
+	ftype := "F"
+	attr, _ := e.Attr()
+	if attr.IsDir() {
+		ftype = "D"
+	}
+	io.WriteString(w, fmt.Sprintf("%s[%s] %s => %s\n", prefix, ftype, virtual, e.Actual()))
+	prefix += "    "
+
+	e.childrenMu.RLock()
+	defer e.childrenMu.RUnlock()
+
+	for _, c := range e.children {
+		c.Print(w, prefix)
+	}
 }
 
 // Make sure *entry implements Entry.

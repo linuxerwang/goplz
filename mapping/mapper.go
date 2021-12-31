@@ -1,6 +1,8 @@
 package mapping
 
 import (
+	"sync"
+
 	"github.com/linuxerwang/goplz/conf"
 	pb "github.com/linuxerwang/goplz/conf/proto"
 )
@@ -22,8 +24,9 @@ type SourceMapper interface {
 }
 
 type sourceMapper struct {
-	excludes []string
-	mappings []*sourceMapping
+	excludes   []string
+	mappings   []*sourceMapping
+	mappingsMu sync.Mutex
 }
 
 func (sm *sourceMapper) Map(actual string) (string, bool, MatchStatus) {
@@ -32,6 +35,10 @@ func (sm *sourceMapper) Map(actual string) (string, bool, MatchStatus) {
 			return "", false, Excluded
 		}
 	}
+
+	sm.mappingsMu.Lock()
+	defer sm.mappingsMu.Unlock()
+
 	for _, mapping := range sm.mappings {
 		if virtual, readonly, st := mapping.Map(actual); virtual != "" {
 			return virtual, readonly, st

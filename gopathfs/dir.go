@@ -18,19 +18,7 @@ func (gpf *GoPathFs) OpenDir(virtual string, context *fuse.Context) ([]fuse.DirE
 		return nil, fuse.ENOENT
 	}
 
-	entries := []fuse.DirEntry{}
-	for _, c := range entry.Children() {
-		attr, err := c.Attr()
-		if err != nil {
-			log.Print(err)
-			continue
-		}
-		entries = append(entries, fuse.DirEntry{
-			Name: c.Virtual(),
-			Mode: attr.Mode,
-		})
-	}
-	return entries, fuse.OK
+	return entry.Children(), fuse.OK
 }
 
 // Mkdir overrides the parent's Mkdir method.

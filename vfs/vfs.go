@@ -2,7 +2,6 @@ package vfs
 
 import (
 	"bytes"
-	"fmt"
 	"io"
 	"log"
 	"os"
@@ -60,7 +59,7 @@ func (fs *fileSystem) MatchPath(virtual string) (matched Entry, remPath []string
 	var idx int
 	var p Entry = &fs.root
 	for ; idx < len(dirs); idx++ {
-		if c, ok := p.Children()[dirs[idx]]; ok {
+		if c := p.GetChild(dirs[idx]); c != nil {
 			p = c
 		} else {
 			break
@@ -85,7 +84,7 @@ func (fs *fileSystem) Track(virtual, actual string, readonly bool) {
 		if i == len(remPath)-1 {
 			e.actual = actual
 		}
-		parent.Children()[rp] = &e
+		parent.SetChild(rp, &e)
 		parent = &e
 	}
 }
@@ -104,7 +103,7 @@ func (fs *fileSystem) Untrack(virtual string) error {
 	if parent.Parent() == nil {
 		return nil
 	}
-	delete(parent.Parent().Children(), parent.Virtual())
+	parent.Parent().DeleteChild(parent.Virtual())
 	return nil
 }
 
@@ -115,20 +114,7 @@ func (fs *fileSystem) String() string {
 }
 
 func (fs *fileSystem) printEntry(e Entry, w io.Writer, prefix string) {
-	virtual := e.Virtual()
-	if virtual == "" || virtual == "." {
-		virtual = "TOP"
-	}
-	ftype := "F"
-	attr, _ := e.Attr()
-	if attr.IsDir() {
-		ftype = "D"
-	}
-	io.WriteString(w, fmt.Sprintf("%s[%s] %s => %s\n", prefix, ftype, virtual, e.Actual()))
-	prefix += "    "
-	for _, c := range e.Children() {
-		fs.printEntry(c, w, prefix)
-	}
+	e.Print(w, prefix)
 }
 
 // New creates and returns a new FileSystem tracking the actual file.
