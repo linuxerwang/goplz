@@ -1,13 +1,13 @@
 subinclude("//bld_tools/please/package")
 
-version = "0.2.4"
+version = "0.2.5"
 
 go_binary(
-    name = "goplz",
-    srcs = [
+    name="goplz",
+    srcs=[
         "main.go",
     ],
-    deps = [
+    deps=[
         "//commands/debug",
         "//commands/init",
         "//commands/start",
@@ -23,16 +23,17 @@ go_binary(
         "//third_party/go:fsnotify",
         "//third_party/go:go_fuse",
     ],
-    definitions = {"github.com/linuxerwang/goplz/commands/version.Version": version},
-    visibility = ["PUBLIC"],
+    definitions={
+        "github.com/linuxerwang/goplz/commands/version.Version": version},
+    visibility=["PUBLIC"],
 )
 
 deb_package(
-    name = "debian",
-    package_name = "goplz",
-    spec = "deb.spec",
-    version = version,
-    files = {
+    name="debian",
+    package_name="goplz",
+    spec="deb.spec",
+    version=version,
+    files={
         "usr/bin/goplz": ":goplz",
     },
 )
