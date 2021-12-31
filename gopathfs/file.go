@@ -79,11 +79,6 @@ func (gpf *GoPathFs) Unlink(virtual string, context *fuse.Context) (st fuse.Stat
 		log.Printf("Failed to unlink virtual file %s => %s, %v\n", virtual, entry.Actual(), err)
 		return fuse.EINVAL
 	}
-
-	if err := gpf.vfs.Untrack(virtual); err != nil {
-		log.Printf("Failed to untrack virtual file %s, %v\n", virtual, err)
-		return fuse.EINVAL
-	}
 	return fuse.OK
 }
 

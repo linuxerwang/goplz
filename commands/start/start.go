@@ -16,14 +16,13 @@ import (
 	"github.com/hanwen/go-fuse/fuse"
 	"github.com/hanwen/go-fuse/fuse/nodefs"
 	"github.com/hanwen/go-fuse/fuse/pathfs"
-	"github.com/rjeczalik/notify"
-	"github.com/urfave/cli"
-
 	"github.com/linuxerwang/goplz/conf"
 	"github.com/linuxerwang/goplz/exec"
 	"github.com/linuxerwang/goplz/gopathfs"
 	"github.com/linuxerwang/goplz/mapping"
 	"github.com/linuxerwang/goplz/vfs"
+	"github.com/rjeczalik/notify"
+	cli "github.com/urfave/cli/v2"
 )
 
 var (
@@ -167,10 +166,10 @@ func startGopathFS(cfg *conf.Config, detach bool, fs vfs.FileSystem, mapper mapp
 		}
 
 		switch ei.Event() {
-		case notify.Create:
+		case notify.Create, notify.Rename:
 			fi, err := os.Stat(actual)
 			if err != nil {
-				log.Printf("Failed to stat actual file %s\n", actual)
+				log.Printf("Failed to stat actual file %s, %v\n", actual, err)
 				return
 			}
 			if fi.IsDir() {
@@ -187,7 +186,7 @@ func startGopathFS(cfg *conf.Config, detach bool, fs vfs.FileSystem, mapper mapp
 			} else {
 				fs.Track(virtual, actual, readonly)
 			}
-		case notify.Remove, notify.Rename:
+		case notify.Remove:
 			fs.Untrack(virtual)
 		}
 		// TODO: is the line needed?

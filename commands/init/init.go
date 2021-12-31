@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/linuxerwang/goplz/conf"
-	"github.com/urfave/cli"
+	cli "github.com/urfave/cli/v2"
 )
 
 // InitCmd is for subcommand "init".

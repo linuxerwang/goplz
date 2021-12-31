@@ -7,9 +7,8 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/urfave/cli"
-
 	"github.com/linuxerwang/goplz/vfs"
+	cli "github.com/urfave/cli/v2"
 )
 
 // DebugCmd is for subcommand "init".

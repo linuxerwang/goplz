@@ -7,7 +7,7 @@ import (
 	"github.com/hanwen/go-fuse/fuse"
 	"github.com/hanwen/go-fuse/fuse/pathfs"
 	"github.com/rjeczalik/notify"
-	"github.com/urfave/cli"
+	cli "github.com/urfave/cli/v2"
 
 	"github.com/linuxerwang/goplz/conf"
 	"github.com/linuxerwang/goplz/mapping"

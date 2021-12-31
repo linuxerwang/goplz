@@ -9,7 +9,7 @@ import (
 	"strings"
 
 	"github.com/hanwen/go-fuse/fuse"
-	"github.com/urfave/cli"
+	cli "github.com/urfave/cli/v2"
 	"golang.org/x/sys/unix"
 )
 

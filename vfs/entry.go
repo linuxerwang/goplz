@@ -21,7 +21,7 @@ type Entry interface {
 }
 
 type entry struct {
-	virtual     string
+	virtual  string
 	actual   string
 	readonly bool
 

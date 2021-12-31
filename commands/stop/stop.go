@@ -4,9 +4,8 @@ import (
 	"fmt"
 	"syscall"
 
-	"github.com/urfave/cli"
-
 	"github.com/linuxerwang/goplz/conf"
+	cli "github.com/urfave/cli/v2"
 )
 
 // StopCmd is for subcommand "stop".

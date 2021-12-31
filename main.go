@@ -4,7 +4,7 @@ import (
 	"log"
 	"os"
 
-	cli "github.com/urfave/cli"
+	cli "github.com/urfave/cli/v2"
 
 	"github.com/linuxerwang/goplz/commands/debug"
 	initialize "github.com/linuxerwang/goplz/commands/init"
@@ -36,3 +36,4 @@ func main() {
 		log.Fatal(err)
 	}
 }
+

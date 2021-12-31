@@ -1,6 +1,6 @@
 subinclude("//bld_tools/please/package")
 
-version = "0.2.3"
+version = "0.2.4"
 
 go_binary(
     name = "goplz",
